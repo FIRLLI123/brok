@@ -21,7 +21,7 @@
                 <?php endif; ?>
                 <form method="POST" action="<?php echo e(route('profile.update')); ?>">
                     <?php echo csrf_field(); ?>
-                    <?php echo method_field('PUT'); ?>
+                    <?php echo method_field('PATCH'); ?>
 
                     <!-- Name -->
                     <div class="mb-4">

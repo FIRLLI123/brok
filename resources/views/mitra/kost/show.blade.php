@@ -3,13 +3,20 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg border border-gray-200">
                 <div class="p-6 md:p-10">
-                    <!-- Tombol Kembali -->
-                    <div class="mb-8 flex items-center">
+                    <!-- Tombol Kembali dan Edit -->
+                    <div class="mb-8 flex items-center justify-between">
                         <a href="{{ route('mitra.kost.index') }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition duration-150 ease-in-out text-base">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
                             </svg>
                             Kembali ke Daftar Kost
+                        </a>
+                        
+                        <a href="{{ route('mitra.kost.edit', $kost->id) }}" class="inline-flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-150 ease-in-out text-base font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                            </svg>
+                            Edit Kost
                         </a>
                     </div>
 

@@ -49,18 +49,17 @@ class RegisteredUserController extends Controller
             'role' => $request->role,
             'phone' => $request->phone,
             'address' => $request->address,
-            'is_active' => $request->role === 'user' ? true : false, // Mitra harus diaktifkan oleh admin
+            'is_active' => $request->role === 'user' ? true : false, // Mitra harus diaktifkan oleh admin, user langsung aktif
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        // Redirect berdasarkan role
-        if ($user->role === 'mitra') {
-            return redirect()->route('mitra.dashboard')->with('status', 'Pendaftaran berhasil! Silakan tunggu persetujuan dari admin.');
+        // Redirect semua user ke login dengan pesan sukses
+        if ($user->role === 'user') {
+            return redirect()->route('login')->with('status', 'Pendaftaran berhasil! Silakan login untuk melanjutkan.');
         }
 
-        return redirect(RouteServiceProvider::HOME);
+        // Untuk mitra, redirect ke login dengan pesan menunggu persetujuan
+        return redirect()->route('login')->with('status', 'Pendaftaran berhasil! Akun Anda sedang menunggu persetujuan dari admin. Silakan login setelah disetujui.');
     }
 }

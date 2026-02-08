@@ -170,39 +170,35 @@
             method: 'POST',
             body: formData,
             headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'X-Requested-With': 'XMLHttpRequest'
             }
         })
         .then(response => {
+            console.log('Response status:', response.status);
+            
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                return response.json().then(data => {
+                    throw new Error(data.message || 'Network response was not ok');
+                });
             }
-            // Try to parse as JSON, if fails, handle as redirect
-            return response.text().then(text => {
-                try {
-                    return JSON.parse(text);
-                } catch (e) {
-                    // If not JSON, assume it's a redirect
-                    window.location.href = response.url;
-                    return null;
-                }
-            });
+            
+            // Parse JSON response
+            return response.json();
         })
         .then(data => {
-            if (data) {
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: 'Data kost berhasil disimpan',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        window.location.href = data.redirect || '/mitra/kost';
-                    });
-                } else {
-                    throw new Error(data.message || 'Terjadi kesalahan saat menyimpan data');
-                }
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: data.message || 'Data kost berhasil disimpan',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    window.location.href = data.redirect || '/mitra/kost';
+                });
+            } else {
+                throw new Error(data.message || 'Terjadi kesalahan saat menyimpan data');
             }
         })
         .catch(error => {

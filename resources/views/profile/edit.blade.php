@@ -15,7 +15,7 @@
                 @endif
                 <form method="POST" action="{{ route('profile.update') }}">
                     @csrf
-                    @method('PUT')
+                    @method('PATCH')
 
                     <!-- Name -->
                     <div class="mb-4">

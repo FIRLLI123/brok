@@ -11,9 +11,7 @@
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php $component->withAttributes([]); ?>
          <?php $__env->slot('logo', null, []); ?> 
-            <a href="/">
-                <img src="<?php echo e(asset('images/logo.jpeg')); ?>" alt="Logo" class="w-20 h-20">
-            </a>
+            
          <?php $__env->endSlot(); ?>
 
         <!-- Session Status -->
