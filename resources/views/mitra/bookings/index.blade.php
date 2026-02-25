@@ -44,6 +44,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Selesai</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Harga</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status Kamar</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
@@ -71,6 +72,25 @@
                                                 </span>
                                             @endif
                                         </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            @if($booking->room->is_available == 1)
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                    Tersedia 
+                                                </span>
+                                            @elseif($booking->room->is_available == 2)
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                    Dipesan 
+                                                </span>
+                                            @elseif($booking->room->is_available == 3)
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                    Terisi 
+                                                </span>
+                                            @else
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                    Tidak Tersedia 
+                                                </span>
+                                            @endif
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             @if($booking->status === 'pending')
                                                 <form action="{{ route('mitra.bookings.approve', $booking) }}" method="POST" class="inline">
@@ -87,12 +107,30 @@
                                                         Tolak
                                                     </button>
                                                 </form>
+                                            @elseif($booking->status === 'approved')
+                                                @if($booking->room->is_available == 2)
+                                                    <form action="{{ route('mitra.bookings.setOccupied', $booking) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <button type="submit" class="text-blue-600 hover:text-blue-900 mr-2">
+                                                            Terisi
+                                                        </button>
+                                                    </form>
+                                                @elseif($booking->room->is_available == 3)
+                                                    <form action="{{ route('mitra.bookings.setAvailable', $booking) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <button type="submit" class="text-green-600 hover:text-green-900">
+                                                            Selesai
+                                                        </button>
+                                                    </form>
+                                                @endif
                                             @endif
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="px-6 py-4 text-center text-gray-500">
+                                        <td colspan="9" class="px-6 py-4 text-center text-gray-500">
                                             Tidak ada data booking
                                         </td>
                                     </tr>

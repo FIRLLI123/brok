@@ -15,7 +15,6 @@ class Room extends Model
     ];
 
     protected $casts = [
-        'is_available' => 'boolean',
         'price' => 'decimal:2'
     ];
 

@@ -15,7 +15,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // Update room availability daily at midnight
+        $schedule->command('rooms:update-availability')->daily();
     }
 
     /**

@@ -45,6 +45,15 @@
                                            class="w-[150px] rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                                 </div>
 
+                                <!-- Status Filter -->
+                                <div class="w-[150px]">
+                                    <select name="status" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                        <option value="">Semua Status</option>
+                                        <option value="tersedia" <?php echo e(request('status') == 'tersedia' ? 'selected' : ''); ?>>Tersedia</option>
+                                        <option value="tidak_tersedia" <?php echo e(request('status') == 'tidak_tersedia' ? 'selected' : ''); ?>>Tidak Tersedia</option>
+                                    </select>
+                                </div>
+
                                 <!-- Search Button -->
                                 <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,7 +63,7 @@
                                 </button>
 
                                 <!-- Reset Button -->
-                                <?php if(request()->hasAny(['search', 'city', 'min_price', 'max_price'])): ?>
+                                <?php if(request()->hasAny(['search', 'city', 'min_price', 'max_price', 'status'])): ?>
                                     <a href="<?php echo e(route('user.kost.index')); ?>" 
                                        class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 focus:bg-gray-300 active:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                         Reset
@@ -88,9 +97,18 @@
                                             <span class="text-lg font-bold text-indigo-600">
                                                 Rp <?php echo e(number_format($kost->price, 0, ',', '.')); ?>/bulan
                                             </span>
-                                            <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
-                                                Tersedia
-                                            </span>
+                                            <?php
+                                                $hasAvailableRoom = $kost->rooms->contains('is_available', true);
+                                            ?>
+                                            <?php if($hasAvailableRoom): ?>
+                                                <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+                                                    Tersedia
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-800 text-xs font-medium rounded-full">
+                                                    Tidak Tersedia
+                                                </span>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </a>

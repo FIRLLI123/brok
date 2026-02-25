@@ -10,8 +10,7 @@ class KostController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Kost::with(['user', 'rooms', 'images'])
-            ->where('is_active', true)
+        $query = Kost::with(['user', 'images'])
             ->where('admin_approved', true);
 
         // Search by name (only if search term is not empty)
@@ -39,24 +38,42 @@ class KostController extends Controller
             $query->where('price', '<=', (float)$request->max_price);
         }
 
-        // Exclude kost yang sudah dibooking oleh user ini
-        $bookedKostIds = auth()->user()->bookings()
-            ->whereIn('status', ['pending', 'approved'])
-            ->pluck('room_id');
-        
-        if ($bookedKostIds->isNotEmpty()) {
-            $query->whereDoesntHave('rooms', function($q) use ($bookedKostIds) {
-                $q->whereIn('id', $bookedKostIds);
-            });
+        // Filter by availability status (based on rooms availability)
+        if ($request->filled('status')) {
+            $status = $request->status;
+            
+            if ($status === 'tersedia') {
+                $query->whereHas('rooms', function($q) {
+                    $q->where('is_available', true);
+                });
+            } elseif ($status === 'tidak_tersedia') {
+                $query->whereDoesntHave('rooms', function($q) {
+                    $q->where('is_available', true);
+                });
+            }
         }
+        // // Exclude kost yang sudah dibooking oleh user ini (hanya tampilkan yang is_active = 1)
+        // $bookedKostIds = auth()->user()->bookings()
+        //     ->whereIn('status', ['pending', 'approved'])
+        //     ->pluck('room_id');
+        
+        // if ($bookedKostIds->isNotEmpty()) {
+        //     $query->whereNotIn('id', function($subquery) use ($bookedKostIds) {
+        //         $subquery->select('kost_id')
+        //             ->from('rooms')
+        //             ->whereIn('id', $bookedKostIds);
+        //     });
+        // }
 
         // Ambil daftar kota untuk filter
-        $cities = Kost::where('is_active', true)
-            ->where('admin_approved', true)
+        $cities = Kost::where('admin_approved', true)
             ->distinct()
             ->pluck('city');
 
-        $kosts = $query->latest()->paginate(9);
+        $kosts = $query->latest()->paginate(9)->withQueryString();
+
+        // Load rooms for each kost to calculate availability
+        $kosts->load('rooms');
 
         return view('user.kost.index', compact('kosts', 'cities'));
     }
@@ -64,9 +81,7 @@ class KostController extends Controller
     public function show(Kost $kost)
     {
         // Load relasi yang diperlukan
-        $kost->load(['user', 'rooms' => function($query) {
-            $query->where('is_available', true);
-        }, 'images']);
+        $kost->load(['user', 'images']);
 
         return view('user.kost.show', compact('kost'));
     }

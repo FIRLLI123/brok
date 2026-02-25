@@ -24,7 +24,6 @@ class BookingController extends Controller
     {
         $request->validate([
             'room_id' => 'required|exists:rooms,id',
-            'kost_id' => 'required|exists:kost,id',
             'start_date' => 'required|date|after:today',
             'end_date' => 'required|date|after:start_date',
         ]);

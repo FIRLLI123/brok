@@ -122,7 +122,26 @@
                                             <?php $__currentLoopData = $kost->rooms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $room): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <div class="border rounded-lg p-4 bg-white">
                                                     <div class="flex justify-between items-center mb-2">
-                                                        <span class="font-semibold">Kamar <?php echo e($room->room_number); ?></span>
+                                                        <div class="flex items-center gap-2">
+                                                            <span class="font-semibold">Kamar <?php echo e($room->room_number); ?></span>
+                                                            <?php if($room->is_available == 1): ?>
+                                                                <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+                                                                    Tersedia
+                                                                </span>
+                                                            <?php elseif($room->is_available == 2): ?>
+                                                                <span class="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">
+                                                                    Dipesan
+                                                                </span>
+                                                            <?php elseif($room->is_available == 3): ?>
+                                                                <span class="inline-flex items-center px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">
+                                                                    Terisi
+                                                                </span>
+                                                            <?php else: ?>
+                                                                <span class="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-800 text-xs font-medium rounded-full">
+                                                                    Tidak Tersedia
+                                                                </span>
+                                                            <?php endif; ?>
+                                                        </div>
                                                         <span class="text-indigo-600 font-bold">
                                                             Rp <?php echo e(number_format($room->price, 0, ',', '.')); ?>/bulan
                                                         </span>
@@ -133,7 +152,6 @@
                                                     <form action="<?php echo e(route('user.bookings.store')); ?>" method="POST" class="space-y-3">
                                                         <?php echo csrf_field(); ?>
                                                         <input type="hidden" name="room_id" value="<?php echo e($room->id); ?>">
-                                                        <input type="hidden" name="kost_id" value="<?php echo e($kost->id); ?>">
                                                         <input type="hidden" name="room_price" value="<?php echo e($room->price); ?>">
                                                         
                                                         <div>
@@ -160,21 +178,29 @@
                                                             </p>
                                                         </div>
                                                         
-                                                        <a href="#" 
-                                                           onclick="
-                                                              const form = this.closest('form');
-                                                              const start = form.querySelector('input[name=start_date]').value;
-                                                              const end = form.querySelector('input[name=end_date]').value;
-                                                              if (!start || !end) {
-                                                                alert('Silakan isi tanggal mulai dan tanggal selesai terlebih dahulu.');
-                                                                return false;
-                                                              }
-                                                              form.submit();
-                                                              return false;
-                                                           "
-                                                           class="w-full block mt-4 text-indigo-600 hover:text-indigo-900 text-center font-semibold text-sm underline">
-                                                            Booking Sekarang
-                                                        </a>
+                                                        <?php if($kost->is_active == 1): ?>
+                                                            <button type="submit" 
+                                                                    class="w-full mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 font-semibold text-sm">
+                                                                Booking Sekarang
+                                                            </button>
+                                                        <?php else: ?>
+                                                            <div class="w-full mt-4 text-center">
+                                                                <?php if($kost->is_active == 2): ?>
+                                                                    <span class="inline-flex items-center px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full">
+                                                                        Sedang Dipesan
+                                                                    </span>
+                                                                <?php elseif($kost->is_active == 3): ?>
+                                                                    <span class="inline-flex items-center px-3 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">
+                                                                        Sudah Terisi
+                                                                    </span>
+                                                                <?php else: ?>
+                                                                    <span class="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-800 text-xs font-medium rounded-full">
+                                                                        Tidak Tersedia
+                                                                    </span>
+                                                                <?php endif; ?>
+                                                                <p class="text-xs text-gray-500 mt-2">Booking tidak tersedia untuk kost ini</p>
+                                                            </div>
+                                                        <?php endif; ?>
                                                     </form>
                                                 </div>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -204,8 +230,12 @@
         document.querySelectorAll('form').forEach(form => {
             const startDateInput = form.querySelector('input[name="start_date"]');
             const endDateInput = form.querySelector('input[name="end_date"]');
-            const roomId = form.querySelector('input[name="room_id"]').value;
-            const pricePerMonth = parseInt(form.querySelector('input[name="room_price"]').value);
+            const roomId = form.querySelector('input[name="room_id"]')?.value;
+            const priceInput = form.querySelector('input[name="room_price"]');
+            
+            if (!startDateInput || !endDateInput || !roomId || !priceInput) return;
+            
+            const pricePerMonth = parseInt(priceInput.value);
             
             function calculateTotal() {
                 if (startDateInput.value && endDateInput.value) {
@@ -216,8 +246,10 @@
                     const months = Math.ceil(diffDays / 30);
                     const totalPrice = pricePerMonth * months;
                     
-                    document.getElementById(`total-price-${roomId}`).textContent = 
-                        `Rp ${totalPrice.toLocaleString('id-ID')}`;
+                    const totalElement = document.getElementById(`total-price-${roomId}`);
+                    if (totalElement) {
+                        totalElement.textContent = `Rp ${totalPrice.toLocaleString('id-ID')}`;
+                    }
                 }
             }
             

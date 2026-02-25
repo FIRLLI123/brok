@@ -41,6 +41,11 @@ class BookingController extends Controller
         
         $booking->update(['status' => 'approved']);
         
+        // Set room is_available = 2 (Dipesan)
+        $room = $booking->room;
+        $room->is_available = 2;
+        $room->save();
+        
         return redirect()->route('mitra.bookings.index')
             ->with('success', 'Booking berhasil disetujui');
     }
@@ -57,4 +62,36 @@ class BookingController extends Controller
         return redirect()->route('mitra.bookings.index')
             ->with('success', 'Booking berhasil ditolak');
     }
-} 
+
+    public function setOccupied(Booking $booking)
+    {
+        // Pastikan booking ini terkait dengan kost milik mitra
+        if ($booking->room->kost->user_id !== auth()->id()) {
+            abort(403);
+        }
+        
+        // Set room is_available = 3 (Terisi)
+        $room = $booking->room;
+        $room->is_available = 3;
+        $room->save();
+        
+        return redirect()->route('mitra.bookings.index')
+            ->with('success', 'Status kamar berhasil diubah menjadi Terisi');
+    }
+
+    public function setAvailable(Booking $booking)
+    {
+        // Pastikan booking ini terkait dengan kost milik mitra
+        if ($booking->room->kost->user_id !== auth()->id()) {
+            abort(403);
+        }
+        
+        // Set room is_available = 1 (Tersedia)
+        $room = $booking->room;
+        $room->is_available = 1;
+        $room->save();
+        
+        return redirect()->route('mitra.bookings.index')
+            ->with('success', 'Status kamar berhasil diubah menjadi Tersedia');
+    }
+}

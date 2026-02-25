@@ -107,6 +107,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/bookings', [App\Http\Controllers\Mitra\BookingController::class, 'index'])->name('bookings.index');
         Route::put('/bookings/{booking}/approve', [App\Http\Controllers\Mitra\BookingController::class, 'approve'])->name('bookings.approve');
         Route::put('/bookings/{booking}/reject', [App\Http\Controllers\Mitra\BookingController::class, 'reject'])->name('bookings.reject');
+        Route::put('/bookings/{booking}/set-occupied', [App\Http\Controllers\Mitra\BookingController::class, 'setOccupied'])->name('bookings.setOccupied');
+        Route::put('/bookings/{booking}/set-available', [App\Http\Controllers\Mitra\BookingController::class, 'setAvailable'])->name('bookings.setAvailable');
         
         // Reviews
         Route::get('/reviews', [App\Http\Controllers\Mitra\ReviewController::class, 'index'])->name('reviews.index');

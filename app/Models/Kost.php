@@ -20,7 +20,6 @@ class Kost extends Model
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
         'admin_approved' => 'boolean',
         'price' => 'decimal:2'
     ];

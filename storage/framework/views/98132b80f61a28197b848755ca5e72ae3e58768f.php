@@ -8,7 +8,7 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg border border-gray-200">
                 <div class="p-6 md:p-10">
-                    <!-- Tombol Kembali dan Edit -->
+                    <!-- Tombol Kembali, Tambah Kamar dan Edit -->
                     <div class="mb-8 flex items-center justify-between">
                         <a href="<?php echo e(route('mitra.kost.index')); ?>" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition duration-150 ease-in-out text-base">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
@@ -17,12 +17,21 @@
                             Kembali ke Daftar Kost
                         </a>
                         
-                        <a href="<?php echo e(route('mitra.kost.edit', $kost->id)); ?>" class="inline-flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-150 ease-in-out text-base font-medium">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                            </svg>
-                            Edit Kost
-                        </a>
+                        <!-- <div class="flex gap-3">
+                            <a href="<?php echo e(route('mitra.rooms.create', ['kost_id' => $kost->id])); ?>" class="inline-flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-150 ease-in-out text-base font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                                </svg>
+                                Tambah Kamar
+                            </a> -->
+                            
+                            <a href="<?php echo e(route('mitra.kost.edit', $kost->id)); ?>" class="inline-flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-150 ease-in-out text-base font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                </svg>
+                                Edit Kost
+                            </a>
+                        </div>
                     </div>
 
                     <!-- Slider Gambar -->
@@ -76,6 +85,58 @@
                         <div class="mt-6 pt-4 border-t border-gray-200">
                             <h2 class="text-xl font-bold text-gray-800 mb-3">Deskripsi Kost</h2>
                             <p class="text-gray-700 leading-relaxed text-base"><?php echo e($kost->description); ?></p>
+                        </div>
+
+                        <!-- Daftar Kamar -->
+                        <div class="mt-8 pt-4 border-t border-gray-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-bold text-gray-800">Daftar Kamar</h2>
+                                <a href="<?php echo e(route('mitra.rooms.create', ['kost_id' => $kost->id])); ?>" 
+                                   class="inline-flex items-center bg-indigo-600 text-white px-3 py-1 rounded text-sm hover:bg-indigo-700">
+                                    + Tambah Kamar
+                                </a>
+                            </div>
+                            
+                            <?php if($kost->rooms->isNotEmpty()): ?>
+                                <div class="space-y-3">
+                                    <?php $__currentLoopData = $kost->rooms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $room): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <div class="flex justify-between items-start p-4 bg-gray-50 rounded-lg border border-gray-200 gap-4">
+                                            <div class="flex-1 min-w-0">
+                                                <p class="font-semibold text-gray-800 truncate">Kamar <?php echo e($room->room_number); ?></p>
+                                                <p class="text-sm text-gray-600">Rp <?php echo e(number_format($room->price, 0, ',', '.')); ?>/bulan</p>
+                                                <p class="text-xs text-gray-500 mt-1 line-clamp-2"><?php echo e($room->description); ?></p>
+                                                <?php if($room->is_available): ?>
+                                                    <span class="inline-flex items-center mt-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                                                        Tersedia
+                                                    </span>
+                                                <?php else: ?>
+                                                    <span class="inline-flex items-center mt-2 px-2 py-1 bg-red-100 text-red-800 text-xs rounded">
+                                                        Tidak Tersedia
+                                                    </span>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="flex gap-2 flex-shrink-0 items-center">
+                                                <a href="<?php echo e(route('mitra.rooms.edit', $room)); ?>" 
+                                                   class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full hover:bg-blue-200 cursor-pointer">
+                                                    Edit
+                                                </a>
+                                                <form action="<?php echo e(route('mitra.rooms.destroy', $room)); ?>" method="POST" 
+                                                      onsubmit="return confirm('Yakin ingin menghapus kamar ini?');"
+                                                      class="inline-flex items-center m-0 p-0 leading-none">
+                                                    <?php echo csrf_field(); ?>
+                                                    <?php echo method_field('DELETE'); ?>
+                                                    <button type="submit" 
+                                                            class="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-800 text-xs font-medium rounded-full hover:bg-red-200 cursor-pointer border-0 m-0 leading-none">
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </div>
+                            <?php else: ?>
+                                <p class="text-gray-500 text-center py-4">Belum ada kamar untuk kost ini.</p>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
