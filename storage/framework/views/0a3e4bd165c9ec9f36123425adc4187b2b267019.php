@@ -17,12 +17,39 @@
                     <!-- Kost Images -->
                     <div class="mb-8">
                         <?php if($kost->images->isNotEmpty()): ?>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <?php $__currentLoopData = $kost->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <img src="<?php echo e(asset('storage/' . $image->image_path)); ?>" 
-                                         alt="<?php echo e($kost->name); ?>" 
-                                         class="w-full h-64 object-cover rounded-lg">
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            <div class="w-full bg-gray-100 rounded-lg overflow-hidden" style="height: 400px;">
+                                <img src="<?php echo e(asset('storage/' . $kost->images->first()->image_path)); ?>"
+                                     alt="<?php echo e($kost->name); ?>"
+                                     class="w-full h-full object-cover">
+                            </div>
+                            <div class="mt-3 flex items-center justify-between gap-3">
+                                <p class="text-sm text-gray-600"><?php echo e($kost->images->count()); ?> gambar tersedia</p>
+                                <button id="open-gallery-modal" type="button" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold text-sm hover:bg-indigo-700">
+                                    Lihat Gambar
+                                </button>
+                            </div>
+
+                            <div id="gallery-modal" class="fixed inset-0 z-50 hidden p-4 md:p-6 overflow-y-auto">
+                                <div class="absolute inset-0 bg-black/70" id="gallery-backdrop"></div>
+                                <div class="relative w-full max-w-2xl mx-auto mt-6 md:mt-10 bg-white rounded-lg shadow-xl p-4 md:p-5">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="text-lg font-semibold">Galeri Gambar</h3>
+                                        <button id="close-gallery-modal" type="button" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700">Tutup</button>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[55vh] overflow-y-auto pr-1">
+                                        <?php $__currentLoopData = $kost->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <a href="<?php echo e(asset('storage/' . $image->image_path)); ?>"
+                                               target="_blank"
+                                               rel="noopener noreferrer"
+                                               class="block border border-gray-200 rounded-md overflow-hidden hover:border-indigo-500 transition">
+                                                <img src="<?php echo e(asset('storage/' . $image->image_path)); ?>"
+                                                     alt="<?php echo e($kost->name); ?> thumbnail <?php echo e($index + 1); ?>"
+                                                     class="w-full aspect-[4/3] object-cover">
+                                            </a>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </div>
+                                </div>
                             </div>
                         <?php else: ?>
                             <div class="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
@@ -226,17 +253,53 @@
     </div>
 
     <script>
+        function initializeGalleryModal() {
+            const openButton = document.getElementById('open-gallery-modal');
+            const modal = document.getElementById('gallery-modal');
+            const closeButton = document.getElementById('close-gallery-modal');
+            const backdrop = document.getElementById('gallery-backdrop');
+
+            if (!openButton || !modal || !closeButton || !backdrop) return;
+
+            const openModal = () => {
+                modal.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            };
+
+            const closeModal = () => {
+                modal.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            };
+
+            openButton.addEventListener('click', openModal);
+            closeButton.addEventListener('click', closeModal);
+            backdrop.addEventListener('click', closeModal);
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    closeModal();
+                }
+            });
+
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeGalleryModal);
+        } else {
+            initializeGalleryModal();
+        }
+
         // Calculate total price based on date range
         document.querySelectorAll('form').forEach(form => {
             const startDateInput = form.querySelector('input[name="start_date"]');
             const endDateInput = form.querySelector('input[name="end_date"]');
             const roomId = form.querySelector('input[name="room_id"]')?.value;
             const priceInput = form.querySelector('input[name="room_price"]');
-            
+
             if (!startDateInput || !endDateInput || !roomId || !priceInput) return;
-            
+
             const pricePerMonth = parseInt(priceInput.value);
-            
+
             function calculateTotal() {
                 if (startDateInput.value && endDateInput.value) {
                     const startDate = new Date(startDateInput.value);
@@ -245,14 +308,14 @@
                     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                     const months = Math.ceil(diffDays / 30);
                     const totalPrice = pricePerMonth * months;
-                    
+
                     const totalElement = document.getElementById(`total-price-${roomId}`);
                     if (totalElement) {
                         totalElement.textContent = `Rp ${totalPrice.toLocaleString('id-ID')}`;
                     }
                 }
             }
-            
+
             startDateInput.addEventListener('change', calculateTotal);
             endDateInput.addEventListener('change', calculateTotal);
         });
@@ -262,4 +325,8 @@
 <?php if (isset($__componentOriginal8e2ce59650f81721f93fef32250174d77c3531da)): ?>
 <?php $component = $__componentOriginal8e2ce59650f81721f93fef32250174d77c3531da; ?>
 <?php unset($__componentOriginal8e2ce59650f81721f93fef32250174d77c3531da); ?>
-<?php endif; ?> <?php /**PATH C:\laragon\www\Brock\resources\views/user/kost/show.blade.php ENDPATH**/ ?>
+<?php endif; ?> 
+
+
+
+<?php /**PATH C:\laragon\www\Brock\resources\views/user/kost/show.blade.php ENDPATH**/ ?>
