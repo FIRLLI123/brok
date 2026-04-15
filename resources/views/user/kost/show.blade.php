@@ -12,10 +12,21 @@
                     <!-- Kost Images -->
                     <div class="mb-8">
                         @if($kost->images->isNotEmpty())
-                            <div class="w-full bg-gray-100 rounded-lg overflow-hidden" style="height: 400px;">
-                                <img src="{{ asset('storage/' . $kost->images->first()->image_path) }}"
-                                     alt="{{ $kost->name }}"
-                                     class="w-full h-full object-cover">
+                            <div class="relative w-full">
+                                <div class="user-kost-swiper rounded-lg overflow-hidden shadow-lg border border-gray-200">
+                                    <div class="swiper-wrapper">
+                                        @foreach($kost->images as $image)
+                                            <div class="swiper-slide">
+                                                <img src="{{ asset('storage/' . $image->image_path) }}"
+                                                     alt="{{ $kost->name }}"
+                                                     class="w-full h-full object-cover">
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="user-kost-swiper-next"></div>
+                                    <div class="user-kost-swiper-prev"></div>
+                                    <div class="user-kost-swiper-pagination"></div>
+                                </div>
                             </div>
                             <div class="mt-3 flex items-center justify-between gap-3">
                                 <p class="text-sm text-gray-600">{{ $kost->images->count() }} gambar tersedia</p>
@@ -244,7 +255,36 @@
         </div>
     </div>
 
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
     <script>
+        function initializeKostImageSlider() {
+            if (typeof Swiper === 'undefined') return;
+            if (!document.querySelector('.user-kost-swiper')) return;
+
+            new Swiper('.user-kost-swiper', {
+                loop: true,
+                effect: 'fade',
+                fadeEffect: {
+                    crossFade: true
+                },
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                },
+                navigation: {
+                    nextEl: '.user-kost-swiper-next',
+                    prevEl: '.user-kost-swiper-prev',
+                },
+                pagination: {
+                    el: '.user-kost-swiper-pagination',
+                    clickable: true,
+                    dynamicBullets: true,
+                },
+            });
+        }
+
         function initializeGalleryModal() {
             const openButton = document.getElementById('open-gallery-modal');
             const modal = document.getElementById('gallery-modal');
@@ -276,8 +316,12 @@
         }
 
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeGalleryModal);
+            document.addEventListener('DOMContentLoaded', () => {
+                initializeKostImageSlider();
+                initializeGalleryModal();
+            });
         } else {
+            initializeKostImageSlider();
             initializeGalleryModal();
         }
 
@@ -312,6 +356,92 @@
             endDateInput.addEventListener('change', calculateTotal);
         });
     </script>
+
+    <style>
+        .user-kost-swiper {
+            width: 100%;
+            position: relative;
+            padding-bottom: calc(320 / 800 * 100%);
+            height: 0;
+            margin: 0 auto;
+            background: #f3f4f6;
+        }
+
+        .user-kost-swiper .swiper-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .user-kost-swiper .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .user-kost-swiper .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .user-kost-swiper-next,
+        .user-kost-swiper-prev {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 12px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .user-kost-swiper-next:hover,
+        .user-kost-swiper-prev:hover {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .user-kost-swiper-next::after,
+        .user-kost-swiper-prev::after {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .user-kost-swiper-next {
+            right: 10px;
+        }
+
+        .user-kost-swiper-prev {
+            left: 10px;
+        }
+
+        .user-kost-swiper-pagination {
+            position: absolute;
+            bottom: 10px !important;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .user-kost-swiper-pagination .swiper-pagination-bullet {
+            background: #fff;
+            opacity: 0.6;
+            width: 7px;
+            height: 7px;
+        }
+
+        .user-kost-swiper-pagination .swiper-pagination-bullet-active {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+    </style>
 </x-app-layout> 
 
 
