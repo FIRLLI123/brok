@@ -23,8 +23,8 @@
                                             </div>
                                         @endforeach
                                     </div>
-                                    <div class="user-kost-swiper-next"></div>
-                                    <div class="user-kost-swiper-prev"></div>
+                                    <div class="user-kost-swiper-next swiper-button-next swiper-button-white"></div>
+                                    <div class="user-kost-swiper-prev swiper-button-prev swiper-button-white"></div>
                                     <div class="user-kost-swiper-pagination"></div>
                                 </div>
                             </div>
@@ -192,13 +192,6 @@
                                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                                                         </div>
                                                         
-                                                        <div>
-                                                            <label class="block text-sm font-medium text-gray-700">Tanggal Selesai</label>
-                                                            <input type="date" name="end_date" required
-                                                                   min="{{ date('Y-m-d', strtotime('+2 days')) }}"
-                                                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                                        </div>
-                                                        
                                                         <div class="bg-blue-50 p-3 rounded">
                                                             <p class="text-sm text-blue-800">
                                                                 <strong>Total Harga:</strong> 
@@ -325,36 +318,6 @@
             initializeGalleryModal();
         }
 
-        // Calculate total price based on date range
-        document.querySelectorAll('form').forEach(form => {
-            const startDateInput = form.querySelector('input[name="start_date"]');
-            const endDateInput = form.querySelector('input[name="end_date"]');
-            const roomId = form.querySelector('input[name="room_id"]')?.value;
-            const priceInput = form.querySelector('input[name="room_price"]');
-
-            if (!startDateInput || !endDateInput || !roomId || !priceInput) return;
-
-            const pricePerMonth = parseInt(priceInput.value);
-
-            function calculateTotal() {
-                if (startDateInput.value && endDateInput.value) {
-                    const startDate = new Date(startDateInput.value);
-                    const endDate = new Date(endDateInput.value);
-                    const diffTime = Math.abs(endDate - startDate);
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    const months = Math.ceil(diffDays / 30);
-                    const totalPrice = pricePerMonth * months;
-
-                    const totalElement = document.getElementById(`total-price-${roomId}`);
-                    if (totalElement) {
-                        totalElement.textContent = `Rp ${totalPrice.toLocaleString('id-ID')}`;
-                    }
-                }
-            }
-
-            startDateInput.addEventListener('change', calculateTotal);
-            endDateInput.addEventListener('change', calculateTotal);
-        });
     </script>
 
     <style>
@@ -395,11 +358,15 @@
             transform: translateY(-50%);
             z-index: 10;
             color: #fff;
-            background-color: rgba(0, 0, 0, 0.4);
-            padding: 12px 10px;
-            border-radius: 4px;
+            background-color: rgba(0, 0, 0, 0.62);
+            width: 56px;
+            height: 56px;
+            border-radius: 9999px;
             cursor: pointer;
             transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .user-kost-swiper-next:hover,
@@ -409,7 +376,7 @@
 
         .user-kost-swiper-next::after,
         .user-kost-swiper-prev::after {
-            font-size: 14px;
+            font-size: 28px;
             font-weight: 700;
         }
 

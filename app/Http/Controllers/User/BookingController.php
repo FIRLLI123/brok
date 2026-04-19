@@ -25,7 +25,6 @@ class BookingController extends Controller
         $request->validate([
             'room_id' => 'required|exists:rooms,id',
             'start_date' => 'required|date|after:today',
-            'end_date' => 'required|date|after:start_date',
         ]);
 
         $room = Room::findOrFail($request->room_id);
@@ -45,16 +44,15 @@ class BookingController extends Controller
             return back()->withErrors(['room_id' => 'Anda sudah memiliki booking untuk kamar ini.']);
         }
         
-        // Hitung total harga berdasarkan durasi (per bulan)
+        // Booking dari user cukup pilih tanggal mulai; durasi default 1 bulan.
         $startDate = \Carbon\Carbon::parse($request->start_date);
-        $endDate = \Carbon\Carbon::parse($request->end_date);
-        $months = $startDate->diffInMonths($endDate) + 1; // Minimal 1 bulan
-        $totalPrice = $room->price * $months;
+        $endDate = $startDate->copy()->addMonth()->subDay();
+        $totalPrice = $room->price;
 
         $booking = auth()->user()->bookings()->create([
             'room_id' => $request->room_id,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
+            'start_date' => $startDate->toDateString(),
+            'end_date' => $endDate->toDateString(),
             'total_price' => $totalPrice,
             'status' => 'pending',
         ]);
