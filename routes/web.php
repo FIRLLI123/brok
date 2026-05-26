@@ -78,9 +78,7 @@ require __DIR__.'/auth.php';
 Route::middleware(['auth'])->group(function () {
     // Admin routes
     Route::prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
         
         // Mitra management
         Route::get('/mitra', [App\Http\Controllers\Admin\MitraController::class, 'index'])->name('mitra.index');

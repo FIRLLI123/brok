@@ -4,13 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class MitraController extends Controller
 {
     public function index()
     {
-        $mitras = User::where('role', 'mitra')->get();
+        $mitras = User::where('role', 'mitra')
+            ->withCount('kost')
+            ->latest()
+            ->get();
+
         return view('admin.mitra.index', compact('mitras'));
     }
 
