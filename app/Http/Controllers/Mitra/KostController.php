@@ -124,9 +124,19 @@ class KostController extends Controller
                     foreach ($request->file('images') as $image) {
                         try {
                             \Log::info('Memproses gambar:', ['original_name' => $image->getClientOriginalName()]);
+
+                            if (!$image->isValid()) {
+                                throw new \Exception('File upload tidak valid');
+                            }
+
+                            $imageSource = $image->getPathname();
+
+                            if (!$imageSource || !is_readable($imageSource)) {
+                                $imageSource = $image->get();
+                            }
                             
                             // Baca gambar dengan Intervention Image
-                            $img = Image::make($image->getRealPath());
+                            $img = Image::make($imageSource);
                             \Log::info('Intervention Image berhasil membuat objek gambar.');
 
                             // Resize dan crop gambar ke ukuran 600x350
@@ -343,9 +353,19 @@ class KostController extends Controller
                     foreach ($request->file('new_images') as $image) {
                         try {
                             \Log::info('Memproses gambar baru:', ['original_name' => $image->getClientOriginalName()]);
+
+                            if (!$image->isValid()) {
+                                throw new \Exception('File upload tidak valid');
+                            }
+
+                            $imageSource = $image->getPathname();
+
+                            if (!$imageSource || !is_readable($imageSource)) {
+                                $imageSource = $image->get();
+                            }
                             
                             // Baca gambar dengan Intervention Image
-                            $img = Image::make($image->getRealPath());
+                            $img = Image::make($imageSource);
 
                             // Resize dan crop gambar ke ukuran 600x350
                             $img->fit(600, 350);
