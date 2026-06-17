@@ -54,18 +54,11 @@
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $booking->start_date->format('d M Y') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $booking->end_date->format('d M Y') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Aktif</span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            @if(!$booking->review)
-                                                <a href="{{ route('user.reviews.create', ['booking' => $booking->id]) }}" 
-                                                   class="px-3 py-1 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">
-                                                    Tambah Ulasan
-                                                </a>
-                                            @else
-                                                <span class="text-gray-500">Sudah Diulas</span>
-                                            @endif
-                                        </td>
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Aktif</span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <span class="text-gray-400">-</span>
+                                            </td>
                                     </tr>
                                     @endforeach
                                 </tbody>

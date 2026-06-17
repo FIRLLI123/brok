@@ -62,18 +62,11 @@
                                         <td class="px-6 py-4 whitespace-nowrap"><?php echo e($booking->start_date->format('d M Y')); ?></td>
                                         <td class="px-6 py-4 whitespace-nowrap"><?php echo e($booking->end_date->format('d M Y')); ?></td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Aktif</span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <?php if(!$booking->review): ?>
-                                                <a href="<?php echo e(route('user.reviews.create', ['booking' => $booking->id])); ?>" 
-                                                   class="px-3 py-1 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">
-                                                    Tambah Ulasan
-                                                </a>
-                                            <?php else: ?>
-                                                <span class="text-gray-500">Sudah Diulas</span>
-                                            <?php endif; ?>
-                                        </td>
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Aktif</span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <span class="text-gray-400">-</span>
+                                            </td>
                                     </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </tbody>
@@ -124,4 +117,5 @@
 <?php if (isset($__componentOriginal8e2ce59650f81721f93fef32250174d77c3531da)): ?>
 <?php $component = $__componentOriginal8e2ce59650f81721f93fef32250174d77c3531da; ?>
 <?php unset($__componentOriginal8e2ce59650f81721f93fef32250174d77c3531da); ?>
-<?php endif; ?> <?php /**PATH C:\laragon\www\Brock\resources\views/user/dashboard.blade.php ENDPATH**/ ?>
+<?php endif; ?> 
+<?php /**PATH C:\laragon\www\Brock\resources\views/user/dashboard.blade.php ENDPATH**/ ?>

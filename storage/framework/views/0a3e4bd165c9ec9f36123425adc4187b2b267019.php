@@ -194,9 +194,21 @@
                                                         
                                                         <div>
                                                             <label class="block text-sm font-medium text-gray-700">Tanggal Mulai</label>
-                                                            <input type="date" name="start_date" required
-                                                                   min="<?php echo e(date('Y-m-d', strtotime('+1 day'))); ?>"
+                                                            <input type="text"
+                                                                   id="start_date_display_<?php echo e($room->id); ?>"
+                                                                   inputmode="numeric"
+                                                                   placeholder="dd-mm-yyyy"
+                                                                   autocomplete="off"
+                                                                   required
+                                                                   data-booking-date-display
+                                                                   data-target="#start_date_<?php echo e($room->id); ?>"
+                                                                   data-min="<?php echo e(date('Y-m-d', strtotime('+1 day'))); ?>"
                                                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                                            <input type="hidden"
+                                                                   id="start_date_<?php echo e($room->id); ?>"
+                                                                   name="start_date"
+                                                                   value="<?php echo e(old('room_id') == $room->id ? old('start_date') : ''); ?>">
+                                                            <p class="mt-1 text-xs text-gray-500">Format: dd-mm-yyyy</p>
                                                         </div>
                                                         
                                                         <div class="bg-blue-50 p-3 rounded">
@@ -316,14 +328,96 @@
 
         }
 
+        function initializeBookingDateInputs() {
+            const formatDisplayDate = (value) => {
+                const digits = value.replace(/\D/g, '').slice(0, 8);
+                const parts = [];
+
+                if (digits.length > 0) parts.push(digits.slice(0, 2));
+                if (digits.length > 2) parts.push(digits.slice(2, 4));
+                if (digits.length > 4) parts.push(digits.slice(4, 8));
+
+                return parts.join('-');
+            };
+
+            const displayToIso = (value) => {
+                const match = value.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+                if (!match) return null;
+
+                const [, day, month, year] = match;
+                const isoDate = `${year}-${month}-${day}`;
+                const parsedDate = new Date(`${isoDate}T00:00:00`);
+
+                if (Number.isNaN(parsedDate.getTime())) return null;
+                if (parsedDate.getFullYear() !== Number(year) || parsedDate.getMonth() + 1 !== Number(month) || parsedDate.getDate() !== Number(day)) {
+                    return null;
+                }
+
+                return isoDate;
+            };
+
+            const isoToDisplay = (value) => {
+                const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+                if (!match) return value;
+
+                const [, year, month, day] = match;
+                return `${day}-${month}-${year}`;
+            };
+
+            document.querySelectorAll('[data-booking-date-display]').forEach((input) => {
+                const hiddenInput = document.querySelector(input.dataset.target);
+                const minDate = input.dataset.min;
+
+                if (!hiddenInput) return;
+
+                if (hiddenInput.value) {
+                    input.value = isoToDisplay(hiddenInput.value);
+                }
+
+                const syncHiddenInput = () => {
+                    input.value = formatDisplayDate(input.value);
+                    const isoDate = displayToIso(input.value);
+
+                    if (!isoDate) {
+                        hiddenInput.value = '';
+                        input.setCustomValidity('Masukkan tanggal dengan format dd-mm-yyyy.');
+                        return;
+                    }
+
+                    if (minDate && isoDate < minDate) {
+                        hiddenInput.value = '';
+                        input.setCustomValidity('Tanggal mulai harus setelah hari ini.');
+                        return;
+                    }
+
+                    hiddenInput.value = isoDate;
+                    input.setCustomValidity('');
+                };
+
+                input.addEventListener('input', syncHiddenInput);
+                input.addEventListener('blur', syncHiddenInput);
+
+                input.closest('form')?.addEventListener('submit', (event) => {
+                    syncHiddenInput();
+
+                    if (!hiddenInput.value) {
+                        input.reportValidity();
+                        event.preventDefault();
+                    }
+                });
+            });
+        }
+
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
                 initializeKostImageSlider();
                 initializeGalleryModal();
+                initializeBookingDateInputs();
             });
         } else {
             initializeKostImageSlider();
             initializeGalleryModal();
+            initializeBookingDateInputs();
         }
 
     </script>

@@ -22,10 +22,16 @@
                         </div>
                     @endif
 
+                    @if($errors->has('error'))
+                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                            <p>{{ $errors->first('error') }}</p>
+                        </div>
+                    @endif
+
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($kosts as $kost)
-                            <a href="{{ route('mitra.kost.show', $kost) }}" class="block">
-                                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 p-4">
+                            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 p-4">
+                                <a href="{{ route('mitra.kost.show', $kost) }}" class="block">
                                     <h3 class="text-xl font-semibold mb-2 text-gray-800">{{ $kost->name }}</h3>
                                     <div class="space-y-2">
                                         <p class="text-gray-600 flex items-center">
@@ -48,8 +54,18 @@
                                             Rp {{ number_format($kost->price, 0, ',', '.') }}/bulan
                                         </p>
                                     </div>
+                                </a>
+
+                                <div class="mt-4 flex justify-end">
+                                    <form action="{{ route('mitra.kost.destroy', $kost) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kost ini? Semua kamar, gambar, dan booking terkait akan ikut terhapus.');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition">
+                                            Hapus
+                                        </button>
+                                    </form>
                                 </div>
-                            </a>
+                            </div>
                         @endforeach
                     </div>
 

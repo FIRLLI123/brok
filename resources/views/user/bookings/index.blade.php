@@ -66,17 +66,18 @@
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                                     @if($booking->status === 'approved') bg-green-100 text-green-800
+                                                    @elseif($booking->status === 'completed') bg-blue-100 text-blue-800
                                                     @elseif($booking->status === 'rejected') bg-red-100 text-red-800
                                                     @else bg-yellow-100 text-yellow-800
                                                     @endif">
-                                                    {{ $booking->status === 'approved' ? 'Done' : ucfirst($booking->status) }}
+                                                    {{ $booking->status === 'approved' ? 'Aktif' : ($booking->status === 'completed' ? 'Selesai' : ucfirst($booking->status)) }}
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 Rp {{ number_format($booking->total_price, 0, ',', '.') }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                @if($booking->status === 'approved' && \Carbon\Carbon::parse($booking->end_date)->isPast())
+                                                @if($booking->status === 'completed' && \Carbon\Carbon::parse($booking->end_date)->isPast())
                                                     @if($booking->review)
                                                         <span class="text-green-600">✓ Sudah diulas</span>
                                                     @else

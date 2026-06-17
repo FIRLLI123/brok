@@ -17,10 +17,10 @@ class ReviewController extends Controller
             abort(403);
         }
 
-        // Check if booking is approved
-        if ($booking->status !== 'approved') {
+        // Check if booking is completed
+        if ($booking->status !== 'completed') {
             return redirect()->route('user.bookings.index')
-                ->with('error', 'Anda hanya bisa memberikan ulasan untuk booking yang sudah disetujui.');
+                ->with('error', 'Anda hanya bisa memberikan ulasan untuk booking yang sudah selesai.');
         }
 
         // Check if booking end date has passed or is today
@@ -47,7 +47,7 @@ class ReviewController extends Controller
         }
 
         // Check if booking is completed
-        if ($booking->status !== 'approved' || Carbon::parse($booking->end_date)->isFuture()) {
+        if ($booking->status !== 'completed' || Carbon::parse($booking->end_date)->isFuture()) {
             return redirect()->route('user.bookings.index')
                 ->with('error', 'Anda hanya bisa memberikan ulasan setelah booking selesai.');
         }

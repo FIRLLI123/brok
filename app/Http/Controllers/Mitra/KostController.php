@@ -432,6 +432,43 @@ class KostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $kost = auth()->user()->kost()
+            ->with(['images', 'rooms.bookings', 'reviews'])
+            ->findOrFail($id);
+
+        try {
+            \DB::beginTransaction();
+
+            foreach ($kost->images as $image) {
+                if (\Storage::disk('public')->exists($image->image_path)) {
+                    \Storage::disk('public')->delete($image->image_path);
+                }
+
+                $image->delete();
+            }
+
+            foreach ($kost->rooms as $room) {
+                $room->bookings()->delete();
+                $room->delete();
+            }
+
+            $kost->reviews()->delete();
+            $kost->delete();
+
+            \DB::commit();
+
+            return redirect()->route('mitra.kost.index')
+                ->with('success', 'Data kost berhasil dihapus.');
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            \Log::error('Error saat menghapus kost: ' . $e->getMessage(), [
+                'kost_id' => $id,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return back()->withErrors([
+                'error' => 'Terjadi kesalahan saat menghapus kost: ' . $e->getMessage(),
+            ]);
+        }
     }
 }

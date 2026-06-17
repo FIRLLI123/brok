@@ -16,10 +16,16 @@ class BookingController extends Controller
             $query->select('id')
                   ->from('rooms')
                   ->whereIn('kost_id', auth()->user()->kost()->pluck('id'));
-        })
-        ->with(['user', 'room.kost'])
-        ->latest()
-        ->paginate(10);
+        });
+
+        if (request('status')) {
+            $bookings->where('status', request('status'));
+        }
+
+        $bookings = $bookings
+            ->with(['user', 'room.kost'])
+            ->latest()
+            ->paginate(10);
 
         return view('mitra.bookings.index', compact('bookings'));
     }
@@ -86,12 +92,14 @@ class BookingController extends Controller
             abort(403);
         }
         
+        $booking->update(['status' => 'completed']);
+
         // Set room is_available = 1 (Tersedia)
         $room = $booking->room;
         $room->is_available = 1;
         $room->save();
         
         return redirect()->route('mitra.bookings.index')
-            ->with('success', 'Status kamar berhasil diubah menjadi Tersedia');
+            ->with('success', 'Booking selesai dan status kamar berhasil diubah menjadi Tersedia');
     }
 }

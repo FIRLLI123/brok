@@ -101,6 +101,7 @@
     const submitBtn = document.getElementById('submitBtn');
     const buttonText = document.getElementById('buttonText');
     const loadingIcon = document.getElementById('loadingIcon');
+    let selectedFiles = [];
 
     // Debug: Periksa elemen loading icon
     console.log('Loading Icon Element:', loadingIcon);
@@ -111,13 +112,17 @@
         imagesInput.click();
     });
 
-    // Preview images
-    imagesInput.addEventListener('change', function(event) {
-        preview.innerHTML = '';
-        const files = Array.from(event.target.files);
-        console.log('Files selected:', files);
+    function syncFileInput() {
+        const dataTransfer = new DataTransfer();
+        selectedFiles.forEach(file => dataTransfer.items.add(file));
+        imagesInput.files = dataTransfer.files;
+    }
 
-        files.forEach(file => {
+    function renderPreview() {
+        preview.innerHTML = '';
+        console.log('Files selected:', selectedFiles);
+
+        selectedFiles.forEach((file, index) => {
             if (file.type.startsWith('image/')) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -126,7 +131,19 @@
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.className = 'w-20 h-20 object-cover rounded shadow-md border';
+
+                    const removeButton = document.createElement('button');
+                    removeButton.type = 'button';
+                    removeButton.className = 'absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-600 text-sm font-bold text-white shadow hover:bg-red-700';
+                    removeButton.innerHTML = '&times;';
+                    removeButton.addEventListener('click', function() {
+                        selectedFiles.splice(index, 1);
+                        syncFileInput();
+                        renderPreview();
+                    });
+
                     wrapper.appendChild(img);
+                    wrapper.appendChild(removeButton);
                     preview.appendChild(wrapper);
                     console.log('Image preview added');
                 };
@@ -135,6 +152,14 @@
                 console.log('File bukan gambar:', file.name);
             }
         });
+    }
+
+    // Preview images
+    imagesInput.addEventListener('change', function(event) {
+        const newFiles = Array.from(event.target.files);
+        selectedFiles = selectedFiles.concat(newFiles);
+        syncFileInput();
+        renderPreview();
     });
 
     // Form submit handler
