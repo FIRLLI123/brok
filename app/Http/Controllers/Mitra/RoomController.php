@@ -29,6 +29,7 @@ class RoomController extends Controller
         $request->validate([
             'kost_id' => 'required|exists:kost,id',
             'room_number' => 'required|string',
+            'room_size' => 'nullable|string|max:50',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
         ]);
@@ -41,6 +42,7 @@ class RoomController extends Controller
         Room::create([
             'kost_id' => $request->kost_id,
             'room_number' => $request->room_number,
+            'room_size' => $request->room_size,
             'description' => $request->description,
             'price' => $request->price,
             'is_available' => true,
@@ -81,6 +83,7 @@ class RoomController extends Controller
         $request->validate([
             'kost_id' => 'required|exists:kost,id',
             'room_number' => 'required|string',
+            'room_size' => 'nullable|string|max:50',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
         ]);

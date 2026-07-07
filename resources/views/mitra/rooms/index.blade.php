@@ -25,6 +25,7 @@
                                         <th class="border p-3 text-left">No</th>
                                         <th class="border p-3 text-left">Nama Kost</th>
                                         <th class="border p-3 text-left">Nomor Kamar</th>
+                                        <th class="border p-3 text-left">Ukuran</th>
                                         <th class="border p-3 text-left">Harga/Bulan</th>
                                         <th class="border p-3 text-left">Status</th>
                                         <th class="border p-3 text-left">Aksi</th>
@@ -36,6 +37,7 @@
                                             <td class="border p-3">{{ $rooms->firstItem() + $index }}</td>
                                             <td class="border p-3">{{ $room->kost->name }}</td>
                                             <td class="border p-3">{{ $room->room_number }}</td>
+                                            <td class="border p-3">{{ $room->room_size ?: '-' }}</td>
                                             <td class="border p-3">Rp {{ number_format($room->price, 0, ',', '.') }}</td>
                                             <td class="border p-3">
                                                 @if($room->is_available)

@@ -51,6 +51,22 @@
                         @enderror
                     </div>
 
+                    {{-- Ukuran Kamar --}}
+                    <div class="mb-4">
+                        <label class="block mb-1 font-medium text-gray-700">
+                            Ukuran Kamar
+                        </label>
+                        <input type="text"
+                               name="room_size"
+                               value="{{ old('room_size') }}"
+                               class="w-full border rounded px-3 py-2 @error('room_size') border-red-500 @enderror"
+                               placeholder="Contoh: 3x4 m atau 12 m²">
+                        <p class="text-xs text-gray-500 mt-1">Opsional. Isi ukuran kamar agar lebih informatif untuk penyewa.</p>
+                        @error('room_size')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     {{-- Deskripsi --}}
                     <div class="mb-4">
                         <label class="block mb-1 font-medium text-gray-700">

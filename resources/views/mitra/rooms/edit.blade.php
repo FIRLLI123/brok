@@ -46,6 +46,15 @@
                         </div>
 
                         <div>
+                            <label for="room_size" class="block text-sm font-medium text-gray-700 mb-2">Ukuran Kamar</label>
+                            <input type="text" name="room_size" id="room_size"
+                                   value="{{ old('room_size', $room->room_size) }}"
+                                   class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                   placeholder="Contoh: 3x4 m atau 12 m²">
+                            <p class="mt-1 text-xs text-gray-500">Opsional. Ukuran ini akan ditampilkan juga ke calon penyewa.</p>
+                        </div>
+
+                        <div>
                             <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
                             <textarea name="description" id="description" rows="4" required
                                       class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"

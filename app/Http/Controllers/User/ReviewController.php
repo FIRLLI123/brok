@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Review;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 
 class ReviewController extends Controller
 {
@@ -21,13 +20,6 @@ class ReviewController extends Controller
         if ($booking->status !== 'completed') {
             return redirect()->route('user.bookings.index')
                 ->with('error', 'Anda hanya bisa memberikan ulasan untuk booking yang sudah selesai.');
-        }
-
-        // Check if booking end date has passed or is today
-        $endDate = Carbon::parse($booking->end_date);
-        if ($endDate->isFuture() && !$endDate->isToday()) {
-            return redirect()->route('user.bookings.index')
-                ->with('error', 'Anda hanya bisa memberikan ulasan setelah atau pada hari terakhir masa booking.');
         }
 
         // Check if user already reviewed this booking
@@ -47,7 +39,7 @@ class ReviewController extends Controller
         }
 
         // Check if booking is completed
-        if ($booking->status !== 'completed' || Carbon::parse($booking->end_date)->isFuture()) {
+        if ($booking->status !== 'completed') {
             return redirect()->route('user.bookings.index')
                 ->with('error', 'Anda hanya bisa memberikan ulasan setelah booking selesai.');
         }

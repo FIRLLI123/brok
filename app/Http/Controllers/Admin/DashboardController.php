@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Kost;
 use App\Models\User;
-
+https://mcp.notion.com/mcp
 class DashboardController extends Controller
 {
     public function index()

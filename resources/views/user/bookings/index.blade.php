@@ -55,6 +55,9 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm text-gray-900">Kamar {{ $booking->room->room_number }}</div>
+                                                @if($booking->room->room_size)
+                                                    <div class="text-sm text-gray-500">Ukuran: {{ $booking->room->room_size }}</div>
+                                                @endif
                                                 <div class="text-sm text-gray-500">{{ $booking->room->description }}</div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -77,7 +80,7 @@
                                                 Rp {{ number_format($booking->total_price, 0, ',', '.') }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                @if($booking->status === 'completed' && \Carbon\Carbon::parse($booking->end_date)->isPast())
+                                                @if($booking->status === 'completed')
                                                     @if($booking->review)
                                                         <span class="text-green-600">✓ Sudah diulas</span>
                                                     @else

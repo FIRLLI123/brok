@@ -9,6 +9,7 @@ class Room extends Model
     protected $fillable = [
         'kost_id',
         'room_number',
+        'room_size',
         'price',
         'description',
         'is_available'

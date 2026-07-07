@@ -76,10 +76,11 @@
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                                     <?php if($booking->status === 'approved'): ?> bg-green-100 text-green-800
+                                                    <?php elseif($booking->status === 'completed'): ?> bg-blue-100 text-blue-800
                                                     <?php elseif($booking->status === 'rejected'): ?> bg-red-100 text-red-800
                                                     <?php else: ?> bg-yellow-100 text-yellow-800
                                                     <?php endif; ?>">
-                                                    <?php echo e($booking->status === 'approved' ? 'Done' : ucfirst($booking->status)); ?>
+                                                    <?php echo e($booking->status === 'approved' ? 'Aktif' : ($booking->status === 'completed' ? 'Selesai' : ucfirst($booking->status))); ?>
 
                                                 </span>
                                             </td>
@@ -88,7 +89,7 @@
 
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                <?php if($booking->status === 'approved' && \Carbon\Carbon::parse($booking->end_date)->isPast()): ?>
+                                                <?php if($booking->status === 'completed' && \Carbon\Carbon::parse($booking->end_date)->isPast()): ?>
                                                     <?php if($booking->review): ?>
                                                         <span class="text-green-600">✓ Sudah diulas</span>
                                                     <?php else: ?>
@@ -121,4 +122,5 @@
 <?php if (isset($__componentOriginal8e2ce59650f81721f93fef32250174d77c3531da)): ?>
 <?php $component = $__componentOriginal8e2ce59650f81721f93fef32250174d77c3531da; ?>
 <?php unset($__componentOriginal8e2ce59650f81721f93fef32250174d77c3531da); ?>
-<?php endif; ?> <?php /**PATH C:\laragon\www\Brock\resources\views/user/bookings/index.blade.php ENDPATH**/ ?>
+<?php endif; ?> 
+<?php /**PATH C:\laragon\www\Brock\resources\views/user/bookings/index.blade.php ENDPATH**/ ?>

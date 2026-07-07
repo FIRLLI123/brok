@@ -98,6 +98,9 @@
                                         <div class="flex justify-between items-start p-4 bg-gray-50 rounded-lg border border-gray-200 gap-4">
                                             <div class="flex-1 min-w-0">
                                                 <p class="font-semibold text-gray-800 truncate">Kamar {{ $room->room_number }}</p>
+                                                @if($room->room_size)
+                                                    <p class="text-sm text-gray-600">Ukuran: {{ $room->room_size }}</p>
+                                                @endif
                                                 <p class="text-sm text-gray-600">Rp {{ number_format($room->price, 0, ',', '.') }}/bulan</p>
                                                 <p class="text-xs text-gray-500 mt-1 line-clamp-2">{{ $room->description }}</p>
                                                 @if($room->is_available)

@@ -177,6 +177,9 @@
                                                             Rp {{ number_format($room->price, 0, ',', '.') }}/bulan
                                                         </span>
                                                     </div>
+                                                    @if($room->room_size)
+                                                        <p class="text-sm text-gray-500 mb-2">Ukuran kamar: {{ $room->room_size }}</p>
+                                                    @endif
                                                     <p class="text-sm text-gray-600 mb-4">{{ $room->description }}</p>
                                                     
                                                     <!-- Booking Form -->

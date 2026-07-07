@@ -50,7 +50,12 @@
                                     @foreach(auth()->user()->bookings()->where('status', 'approved')->latest()->take(5)->get() as $booking)
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $booking->room->kost->name }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $booking->room->room_number }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div>{{ $booking->room->room_number }}</div>
+                                            @if($booking->room->room_size)
+                                                <div class="text-xs text-gray-500">{{ $booking->room->room_size }}</div>
+                                            @endif
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $booking->start_date->format('d M Y') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $booking->end_date->format('d M Y') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">

@@ -81,7 +81,7 @@ class KostController extends Controller
     public function show(Kost $kost)
     {
         // Load relasi yang diperlukan
-        $kost->load(['user', 'images']);
+        $kost->load(['user', 'images', 'rooms']);
 
         return view('user.kost.show', compact('kost'));
     }
