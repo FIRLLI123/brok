@@ -58,7 +58,12 @@
                                     <?php $__currentLoopData = auth()->user()->bookings()->where('status', 'approved')->latest()->take(5)->get(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $booking): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap"><?php echo e($booking->room->kost->name); ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap"><?php echo e($booking->room->room_number); ?></td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div><?php echo e($booking->room->room_number); ?></div>
+                                            <?php if($booking->room->room_size): ?>
+                                                <div class="text-xs text-gray-500"><?php echo e($booking->room->room_size); ?></div>
+                                            <?php endif; ?>
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap"><?php echo e($booking->start_date->format('d M Y')); ?></td>
                                         <td class="px-6 py-4 whitespace-nowrap"><?php echo e($booking->end_date->format('d M Y')); ?></td>
                                         <td class="px-6 py-4 whitespace-nowrap">

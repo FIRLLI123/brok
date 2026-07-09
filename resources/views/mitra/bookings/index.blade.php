@@ -44,6 +44,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kost</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kamar</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penyewa</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. HP</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Mulai</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Selesai</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Harga</th>
@@ -58,6 +59,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $booking->room->kost->name }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">Kamar {{ $booking->room->room_number }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $booking->user->name }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $booking->user->phone ?: '-' }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($booking->start_date)->format('d/m/Y') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($booking->end_date)->format('d/m/Y') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</td>
@@ -138,7 +140,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="9" class="px-6 py-4 text-center text-gray-500">
+                                        <td colspan="10" class="px-6 py-4 text-center text-gray-500">
                                             Tidak ada data booking
                                         </td>
                                     </tr>

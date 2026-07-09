@@ -87,6 +87,36 @@ unset($__errorArgs, $__bag); ?>
                     
                     <div class="mb-4">
                         <label class="block mb-1 font-medium text-gray-700">
+                            Ukuran Kamar
+                        </label>
+                        <input type="text"
+                               name="room_size"
+                               value="<?php echo e(old('room_size')); ?>"
+                               class="w-full border rounded px-3 py-2 <?php $__errorArgs = ['room_size'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-500 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                               placeholder="Contoh: 3x4 m atau 12 m²">
+                        <p class="text-xs text-gray-500 mt-1">Opsional. Isi ukuran kamar agar lebih informatif untuk penyewa.</p>
+                        <?php $__errorArgs = ['room_size'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <p class="text-red-500 text-sm mt-1"><?php echo e($message); ?></p>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                    </div>
+
+                    
+                    <div class="mb-4">
+                        <label class="block mb-1 font-medium text-gray-700">
                             Deskripsi Kamar <span class="text-red-500">*</span>
                         </label>
                         <textarea name="description" 

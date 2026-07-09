@@ -29,7 +29,11 @@
                             </a>
                             <a href="<?php echo e(route('mitra.bookings.index', ['status' => 'approved'])); ?>" 
                                class="px-4 py-2 rounded-md <?php echo e(request('status') === 'approved' ? 'bg-blue-500 text-white' : 'bg-gray-200'); ?>">
-                                Done
+                                Disetujui
+                            </a>
+                            <a href="<?php echo e(route('mitra.bookings.index', ['status' => 'completed'])); ?>" 
+                               class="px-4 py-2 rounded-md <?php echo e(request('status') === 'completed' ? 'bg-blue-500 text-white' : 'bg-gray-200'); ?>">
+                                Selesai
                             </a>
                             <a href="<?php echo e(route('mitra.bookings.index', ['status' => 'rejected'])); ?>" 
                                class="px-4 py-2 rounded-md <?php echo e(request('status') === 'rejected' ? 'bg-blue-500 text-white' : 'bg-gray-200'); ?>">
@@ -65,7 +69,11 @@
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <?php if($booking->status === 'approved'): ?>
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                    Done
+                                                    Disetujui
+                                                </span>
+                                            <?php elseif($booking->status === 'completed'): ?>
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                    Selesai
                                                 </span>
                                             <?php elseif($booking->status === 'pending'): ?>
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
@@ -157,4 +165,5 @@
 <?php if (isset($__componentOriginal8e2ce59650f81721f93fef32250174d77c3531da)): ?>
 <?php $component = $__componentOriginal8e2ce59650f81721f93fef32250174d77c3531da; ?>
 <?php unset($__componentOriginal8e2ce59650f81721f93fef32250174d77c3531da); ?>
-<?php endif; ?> <?php /**PATH C:\laragon\www\Brock\resources\views/mitra/bookings/index.blade.php ENDPATH**/ ?>
+<?php endif; ?> 
+<?php /**PATH C:\laragon\www\Brock\resources\views/mitra/bookings/index.blade.php ENDPATH**/ ?>

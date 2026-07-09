@@ -23,7 +23,7 @@ class BookingController extends Controller
         }
 
         $bookings = $bookings
-            ->with(['user', 'room.kost'])
+            ->with(['user:id,name,email,phone', 'room.kost'])
             ->latest()
             ->paginate(10);
 
@@ -34,6 +34,8 @@ class BookingController extends Controller
     {
         // Pastikan booking ini terkait dengan kost milik mitra
         $this->authorize('view', $booking);
+
+        $booking->loadMissing(['user:id,name,email,phone', 'room.kost']);
         
         return view('mitra.bookings.show', compact('booking'));
     }
