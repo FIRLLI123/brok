@@ -60,22 +60,27 @@
 
                     @if($kost->images->count() > 0)
                     <div class="mb-4">
-                        <label class="block mb-1">Gambar Saat Ini</label>
-                        <div class="flex gap-2 flex-wrap">
+                        <label class="block mb-2">Gambar Saat Ini</label>
+                        <div class="space-y-3">
                             @foreach($kost->images as $image)
-                                <div class="relative group">
+                                <label class="flex items-center gap-3 rounded-lg border border-gray-300 bg-gray-50 p-3" for="remove-image-{{ $image->id }}">
                                     <img src="{{ asset('storage/' . $image->image_path) }}"
                                          alt="{{ $kost->name }}"
-                                         class="w-20 h-20 object-cover rounded shadow-md border">
-                                    <button type="button"
-                                            onclick="removeImage(event, {{ $image->id }})"
-                                            class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 opacity-100 group-hover:opacity-100 transition"
-                                            aria-label="Hapus gambar">
-                                        &times;
-                                    </button>
-                                </div>
+                                         class="h-20 w-20 rounded border object-cover bg-white">
+                                    <span class="flex-1 text-sm text-gray-700">
+                                        Tandai untuk menghapus gambar ini
+                                    </span>
+                                    <input id="remove-image-{{ $image->id }}"
+                                           type="checkbox"
+                                           name="remove_images[]"
+                                           value="{{ $image->id }}"
+                                           class="h-5 w-5 rounded border-gray-300 text-red-600 focus:ring-red-500">
+                                </label>
                             @endforeach
                         </div>
+                        <p class="mt-2 text-sm text-gray-500">
+                            Centang gambar yang ingin dihapus, lalu klik <strong>Simpan Perubahan</strong>.
+                        </p>
                         <input type="hidden" name="existing_images" value="{{ $kost->images->pluck('id')->implode(',') }}">
                     </div>
                     @endif
@@ -143,8 +148,6 @@
     const submitBtn = document.getElementById('submitBtn');
     const buttonText = document.getElementById('buttonText');
     const loadingIcon = document.getElementById('loadingIcon');
-    let imagesToRemove = [];
-
     uploadBox.addEventListener('click', function() {
         imagesInput.click();
     });
@@ -173,48 +176,8 @@
         });
     });
 
-    function removeImage(event, imageId) {
-        Swal.fire({
-            title: 'Hapus Gambar?',
-            text: 'Apakah Anda yakin ingin menghapus gambar ini?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                if (!imagesToRemove.includes(imageId)) {
-                    imagesToRemove.push(imageId);
-                }
-
-                const imageWrapper = event.currentTarget.closest('.relative');
-                if (imageWrapper) {
-                    imageWrapper.remove();
-                }
-
-                const existingImagesInput = document.querySelector('input[name="existing_images"]');
-                if (existingImagesInput) {
-                    const existingIds = existingImagesInput.value
-                        .split(',')
-                        .filter(id => id && !imagesToRemove.includes(parseInt(id, 10)));
-                    existingImagesInput.value = existingIds.join(',');
-                }
-            }
-        });
-    }
-
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-
-        if (imagesToRemove.length > 0) {
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'remove_images';
-            hiddenInput.value = imagesToRemove.join(',');
-            form.appendChild(hiddenInput);
-        }
 
         submitBtn.disabled = true;
         buttonText.textContent = 'Menyimpan...';

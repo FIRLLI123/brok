@@ -325,7 +325,12 @@ class KostController extends Controller
 
                 // Hapus gambar yang dipilih
                 if ($request->has('remove_images')) {
-                    $removeIds = explode(',', $request->remove_images);
+                    $removeIds = $request->input('remove_images', []);
+                    if (!is_array($removeIds)) {
+                        $removeIds = explode(',', $removeIds);
+                    }
+
+                    $removeIds = array_filter($removeIds);
                     \Log::info('Menghapus gambar', ['image_ids' => $removeIds]);
                     
                     foreach ($removeIds as $imageId) {
